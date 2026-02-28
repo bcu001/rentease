@@ -5,6 +5,7 @@ import { ENV } from "../config/env";
 import jwt from 'jsonwebtoken'
 import asyncHandler from "../helpers/asyncHandler";
 import { AppError } from "../helpers/AppError";
+import { normalizeUser } from "../helpers/normalizeUser";
 
 export const logIn = asyncHandler(async(req:Request, res:Response)=>{
         const {email, password} = req.body;
@@ -28,12 +29,7 @@ export const logIn = asyncHandler(async(req:Request, res:Response)=>{
             message:"user log in successfully",
             data:{
                 token,
-                user: {
-                    id: existingUser._id,
-                    name: existingUser.name,
-                    email: existingUser.email,
-                    createdAt: existingUser.createdAt
-                }
+                user: normalizeUser(existingUser)
             }
         })
 } )
@@ -54,7 +50,7 @@ export const register = asyncHandler(async(req:Request, res:Response)=>{
     success:true,
     message:"user as been registered",
     data:{
-        user:newUser,
+        user:normalizeUser(newUser),
     }
    })
 })

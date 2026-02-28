@@ -3,6 +3,7 @@ import { ENV } from "./config/env";
 import connectToDB from "./database/mongodb";
 
 import authRouter from "./routes/auth.routes";
+import userRouter from "./routes/user.routes"
 import { User } from "./models/user.model";
 import globalExceptionHandler from "./middlewares/globalExceptionHandler";
 
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use(`${apiVersion}/auth`, authRouter);
+app.use(`${apiVersion}/users`, userRouter)
 
 
 app.use(globalExceptionHandler);
