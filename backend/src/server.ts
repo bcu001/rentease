@@ -4,6 +4,8 @@ import connectToDB from "./database/mongodb";
 
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes"
+import productRouter from "./routes/products-apis/product.routes"
+import adminProductRouter from "./routes/products-apis/admin.product.routes"
 import { User } from "./models/user.model";
 import globalExceptionHandler from "./middlewares/globalExceptionHandler";
 
@@ -21,6 +23,11 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(`${apiVersion}/auth`, authRouter);
 app.use(`${apiVersion}/users`, userRouter)
+app.use(`${apiVersion}/products`, productRouter)
+
+// admins only apis
+app.use(`${apiVersion}/admin/products`, adminProductRouter)
+
 
 
 app.use(globalExceptionHandler);
