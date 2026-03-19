@@ -7,11 +7,10 @@ const validateRequest = (zodSchema:z.ZodObject)=>{
         const validate = zodSchema.safeParse(req.body);
 
         if ( !validate.success){
-            let errMessage =  validate.error.issues.map(e=>e.message)
-            return res.json({
+            let errMessage =  validate.error.issues.map(e=>e.message).join(", ")
+            return res.status(400).json({
                 success:false,
                 message: errMessage,
-                validate:{"shit": validate.error}
             })
         }
 

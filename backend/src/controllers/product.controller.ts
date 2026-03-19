@@ -9,7 +9,11 @@ export const getProducts = asyncHandler(
 );
 
 export const getProductById = asyncHandler(
-  async (req: Request, res: Response) => {},
+  async (req: Request, res: Response) => {
+     const {id} = req.params;
+    const product = await Product.findById(id);
+    return sendSuccess(res,product);
+  },
 );
 export const createProduct = asyncHandler(
   async (req: Request, res: Response) => {
