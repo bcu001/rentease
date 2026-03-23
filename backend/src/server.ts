@@ -9,7 +9,7 @@ import adminProductRouter from "./routes/products-apis/admin.product.routes"
 import { User } from "./models/user.model";
 import globalExceptionHandler from "./middlewares/globalExceptionHandler";
 import Product from "./models/product.model";
-import { products } from "./seedData/products";
+// import { products } from "./seedData/products";
 import cartRouter from "./routes/cart.routes"
 
 const app: Application = express();
@@ -36,20 +36,20 @@ app.use(`${apiVersion}/admin/products`, adminProductRouter)
 
 app.use(globalExceptionHandler);
 
-app.post("/bulk", async (req, res) => {
-  for (const p of products) {
-  const product = new Product(p);
-  await product.save();
-}
-  res.send('ok');
-  // await User.create({
-  //   name: "john doe",
-  //   email: "john.doe@example.com",
-  //   hashedPassword:
-  //     "$2b$12$K9vB3R7xL8qW2mP5vY9uO.eR3gT5hY7jK9lM1nB3vC5xZ7aQ8wE2r",
-  //   role: "DEVELOPER",
-  // });
-});
+// app.post("/bulk", async (req, res) => {
+//   for (const p of products) {
+//   const product = new Product(p);
+//   await product.save();
+// }
+//   res.send('ok');
+//   // await User.create({
+//   //   name: "john doe",
+//   //   email: "john.doe@example.com",
+//   //   hashedPassword:
+//   //     "$2b$12$K9vB3R7xL8qW2mP5vY9uO.eR3gT5hY7jK9lM1nB3vC5xZ7aQ8wE2r",
+//   //   role: "DEVELOPER",
+//   // });
+// });
 
 app.listen(PORT, async () => {
   console.log(`server is running live at http://localhost:${PORT}`);

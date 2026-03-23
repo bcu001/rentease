@@ -1,13 +1,83 @@
 import { Request, Response } from "express";
 import asyncHandler from "../helpers/asyncHandler";
+import { Cart } from "../models/cart.model";
+import { sendSuccess } from "../helpers/response";
+import Product from "../models/product.model";
+import { AppError } from "../helpers/AppError";
+
+export const addCart = asyncHandler(async (req: Request, res: Response) => {
+  const { productId, quantity = 1, rentDuration, userId } = req.body;
+
+  // change the userID from body to req.user.userId
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new AppError("product not found", 404);
+  }
+
+  if (product.availableQuantity < quantity) {
+    throw new AppError(
+      `only ${product.availableQuantity} items are available`,
+      400,
+    );
+  }
+
+  let userCart = await Cart.findOne({ userId });
+  if (!userCart) {
+    userCart = await Cart.create({
+      userId,
+      items: [{ productId, quantity, rentDuration }],
+    });
+
+    return sendSuccess(res, userCart);
+  }
+
+  const existingItem = userCart.items.find(
+    (item) => item.productId === productId,
+  );
+
+  if (existingItem) {
+    existingItem.quantity += quantity;
+    existingItem.rentDuration = rentDuration;
+
+    if (existingItem.quantity > product.availableQuantity) {
+      throw new AppError(
+        `only ${product.availableQuantity} items are available`,
+        400,
+      );
+    }
+  } else {
+    userCart.items.push({ productId, quantity, rentDuration });
+  }
+
+  await userCart.save();
+  return sendSuccess(res, userCart);
+});
+
+export const updateCart = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { items ,userId} = req.body;
+    const userCart = await Cart.findOne({userId});
+    if(!userCart){
+      throw new AppError("cart not found",404);
+    }
+
+    userCart.items = items;
+    await userCart.save();
+    return sendSuccess(res, userCart);
+  },
+);
 
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
-    
+  const { userId } = req.body;
+  const userCart = await Cart.findOne({ userId });
+  if (!userCart) {
+    throw new AppError("cart not found", 404);
+  }
+  return sendSuccess(res, userCart);
 });
-export const addCart = asyncHandler(async (req: Request, res: Response) => {});
-export const updateCart = asyncHandler(
-  async (req: Request, res: Response) => {},
-);
+
 export const removeItemCart = asyncHandler(
   async (req: Request, res: Response) => {},
 );

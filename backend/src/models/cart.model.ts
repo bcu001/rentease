@@ -27,7 +27,7 @@ const cartItemSchema = new Schema<ICartItem>(
       default:1
     },
     rentDuration: {
-      types: Number,
+      type: Number,
       required: true,
     },
   },
