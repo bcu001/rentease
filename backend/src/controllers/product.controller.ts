@@ -5,7 +5,17 @@ import { AppError } from "../helpers/AppError";
 import { sendSuccess } from "../helpers/response";
 
 export const getProducts = asyncHandler(
-  async (req: Request, res: Response) => {},
+  async (req: Request, res: Response) => {
+    const { name, category, monthlyRent } = req.query;
+    // console.log({name,category,monthlyRent})
+    const queryFilter:any  ={};
+    if(name === "string") queryFilter.name = {$regex:name, options:"i"};
+    if(category !==undefined) queryFilter.category = category;
+    if(monthlyRent !== undefined) queryFilter.monthlyRent = { $lte: Number(monthlyRent) };
+    const filterData = await Product.find(queryFilter);
+
+    return sendSuccess(res, filterData);
+  }
 );
 
 export const getProductById = asyncHandler(
@@ -17,14 +27,14 @@ export const getProductById = asyncHandler(
 );
 export const createProduct = asyncHandler(
   async (req: Request, res: Response) => {
-    const {name, category, monthlyRent, tenureOptions, availableQuantity} = req.body;
+    const {name, category, monthlyRent, availableQuantity} = req.body;
 
     const existingProduct = await Product.findOne({name});
     if (existingProduct) { 
         throw new AppError("product already exist")
     }
 
-    const newProduct = await Product.create({name, category, monthlyRent, tenureOptions, availableQuantity});
+    const newProduct = await Product.create({name, category, monthlyRent, availableQuantity});
 
     return sendSuccess(res, newProduct )
   },
@@ -32,7 +42,7 @@ export const createProduct = asyncHandler(
 export const updateProduct = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name, category, monthlyRent, tenureOptions, availableQuantity } = req.body;
+    const { name, category, monthlyRent, availableQuantity } = req.body;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -44,7 +54,6 @@ export const updateProduct = asyncHandler(
     if (name !== undefined) updateData.name = name;
     if (category !== undefined) updateData.category = category;
     if (monthlyRent !== undefined) updateData.monthlyRent = monthlyRent;
-    if (tenureOptions !== undefined) updateData.tenureOptions = tenureOptions;
     if (availableQuantity !== undefined) updateData.availableQuantity = availableQuantity;
 
     const updatedProduct = await Product.findByIdAndUpdate(

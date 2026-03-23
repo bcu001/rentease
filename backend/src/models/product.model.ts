@@ -1,7 +1,6 @@
 import {
   Schema,
   Document,
-  CallbackWithoutResultAndOptionalError,
   model,
 } from "mongoose";
 
@@ -23,7 +22,7 @@ export interface IProduct extends Document {
   monthlyRent: number;
   securityDeposit: number;
   availableQuantity: number;
-  tenureOptions: number[];
+  // tenureOptions: number[];
   status: ProductStatus;
 }
 
@@ -33,7 +32,7 @@ const productSchema = new Schema<IProduct>({
   monthlyRent: { type: Number, required: true, min: 0 },
   securityDeposit: { type: Number },
   availableQuantity:{type:Number, required:true, default:1, min:0},
-  tenureOptions: { type: [Number], required: true, min: 1 },
+  // tenureOptions: { type: [Number], required: true, min: 1 },
   status: {
     type: String,
     enum: Object.values(ProductStatus),
