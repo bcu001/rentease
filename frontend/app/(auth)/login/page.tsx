@@ -4,6 +4,12 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ErrorShow from "@/components/ErrorShow";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { ENV } from "@/utilites/env";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   email: string;
@@ -17,7 +23,28 @@ const Page = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within AuthProvider");
+  }
+  const {setUser, setToken} = authContext;
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: async(data:Inputs)=>{
+      const res = await axios.post(`${ENV.serverUrl}/auth/login`, data);
+      return res.data.data;
+    },
+    onSuccess:(data)=>{
+      setUser(data.user);
+      setToken(data.token);
+      router.replace("/")
+    }
+  })
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    mutation.mutate(data);
+  };
 
   return (
     <div className="flex items-center justify-center h-dvh">
@@ -30,7 +57,7 @@ const Page = () => {
           {...register("email", { required: true })}
         />
         {errors.email &&<ErrorShow message={"This field is required"}/>}
-        <Input placeholder="********" {...register("password", { required: true })} />
+        <Input placeholder="********" type="password" {...register("password", { required: true })} />
         {errors.password &&<ErrorShow message={"This field is required"}/>}
         <Button className="w-full cursor-pointer" type="submit">Submit</Button>
       </form>
