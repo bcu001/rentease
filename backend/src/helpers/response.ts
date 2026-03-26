@@ -1,10 +1,10 @@
 import { Response } from "express";
 
-export const sendError = (res:Response, data:unknown,statusCode:number = 500, message:string = "server internal error")=>{
+export const sendError = (res:Response, error:unknown,statusCode:number = 500, message:string = "server internal error")=>{
     res.status(statusCode).json({
         success:false,
         message,
-        data
+        error
     });
 };
 

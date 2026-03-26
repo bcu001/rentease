@@ -4,19 +4,24 @@ import connectToDB from "./database/mongodb";
 
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes"
-import productRouter from "./routes/products-apis/product.routes"
-import adminProductRouter from "./routes/products-apis/admin.product.routes"
+import productRouter from "./routes/product.routes"
+import adminRouter from "./routes/admin.routes"
 import { User } from "./models/user.model";
 import globalExceptionHandler from "./middlewares/globalExceptionHandler";
 import Product from "./models/product.model";
 // import { products } from "./seedData/products";
 import cartRouter from "./routes/cart.routes"
+import cors from "cors"
 
 const app: Application = express();
 const PORT = ENV.PORT;
 const apiVersion = "/api/v1";
 
 app.use(express.json())
+
+app.use(cors({
+  origin: ENV.CLIENT_URL
+}))
 
 app.get("/", (req: Request, res: Response) => {
   res.json({
@@ -30,7 +35,7 @@ app.use(`${apiVersion}/products`, productRouter)
 app.use(`${apiVersion}/cart`, cartRouter);
 
 // admins only apis
-app.use(`${apiVersion}/admin/products`, adminProductRouter)
+app.use(`${apiVersion}/admin/products`, adminRouter)
 
 
 

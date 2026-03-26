@@ -9,6 +9,7 @@ const envSchema = z.object({
   DB_NAME: z.string(),
   JWT_SECRET:z.string(),
   JWT_EXPIRE_IN:z.string(),
+  CLIENT_URL: z.string(),
 });
 
 export const ENV = envSchema.parse(process.env);

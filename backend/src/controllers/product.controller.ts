@@ -4,8 +4,18 @@ import Product, { IProduct } from "../models/product.model";
 import { AppError } from "../helpers/AppError";
 import { sendSuccess } from "../helpers/response";
 
+export const getTopProducts = asyncHandler(
+  async(req:Request, res:Response)=>{
+    console.log("apple")
+    const productList = await Product.find().limit(4);
+    return sendSuccess(res,productList,200,"top 4 product")
+    // return sendSuccess(res, "get apple")
+  }
+)
+
 export const getProducts = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("get products")
     const { name, category, monthlyRent } = req.query;
     // console.log({name,category,monthlyRent})
     const queryFilter:any  ={};
@@ -20,6 +30,7 @@ export const getProducts = asyncHandler(
 
 export const getProductById = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("getprdocut by id")
      const {id} = req.params;
     const product = await Product.findById(id);
     return sendSuccess(res,product);
@@ -27,6 +38,7 @@ export const getProductById = asyncHandler(
 );
 export const createProduct = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("create producti")
     const {name, category, monthlyRent, availableQuantity} = req.body;
 
     const existingProduct = await Product.findOne({name});
@@ -41,6 +53,7 @@ export const createProduct = asyncHandler(
 );
 export const updateProduct = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("update product")
     const { id } = req.params;
     const { name, category, monthlyRent, availableQuantity } = req.body;
 
@@ -67,5 +80,7 @@ export const updateProduct = asyncHandler(
 );
 
 export const deleteProduct = asyncHandler(
-  async (req: Request, res: Response) => {},
+  async (req: Request, res: Response) => {
+    console.log("delete product")
+  },
 );
