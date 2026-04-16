@@ -14,6 +14,7 @@ export enum ProductStatus {
 
 export interface IProduct extends Document {
   name: string;
+  description:string;
   category: Category;
   rentAmount: number;
   depositAmount: number;
@@ -23,7 +24,8 @@ export interface IProduct extends Document {
 }
 
 const productSchema = new Schema<IProduct>({
-  name: { type: String, required: true, index: true },
+  name: { type: String, required: true,lowercase:true, index: true },
+  description:{type:String, required:true, lowercase:true},
   category: { type: String, enum: Object.values(Category), required: true },
   rentAmount: { type: Number, required: true, min: 0 },
   depositAmount: { type: Number },

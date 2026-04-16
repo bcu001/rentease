@@ -1,12 +1,14 @@
 import { Router } from "express";
-import {   getTopProducts, getProductById, getProducts, } from "./product.controller";
+import {
+  getTopProductsHandler,
+  getProductByIdHandler,
+  getProductsHandler,
+} from "./product.controller";
 
+const router: Router = Router();
 
-const router:Router = Router();
-
-router.get("/top", getTopProducts)
-router.get("/", getProducts);
-router.get("/:id", getProductById);
-
+router.get("/top", getTopProductsHandler);
+router.get("/", getProductsHandler);
+router.get("/:id", getProductByIdHandler);
 
 export default router;

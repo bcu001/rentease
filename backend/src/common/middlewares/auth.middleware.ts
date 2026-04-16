@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { ENV } from "../config/env";
 import { AppError } from "../errors/AppError";
 import { User } from "../../modules/user/user.schema";
-import { sendError } from "../utils/response";
+import { sendError } from "../utils/apiResponse";
 
 type JwtPlayload = {
   userId: string;

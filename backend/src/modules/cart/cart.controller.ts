@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Cart } from "./cart.schema";
 import asyncHandler from "../../common/middlewares/asyncHandler";
-import { sendSuccess } from "../../common/utils/response";
+import { sendSuccess } from "../../common/utils/apiResponse";
 import Product from "../product/product.schema";
 import { AppError } from "../../common/errors/AppError";
 
