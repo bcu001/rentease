@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { ENV } from "../config/env";
-import { AppError } from "../helpers/AppError";
-import { User } from "../models/user.model";
-import { sendError } from "../helpers/response";
+import { AppError } from "../errors/AppError";
+import { User } from "../../modules/user/user.schema";
+import { sendError } from "../utils/response";
 
 type JwtPlayload = {
   userId: string;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteMyProfile, getMyProfile, updateMyProfile } from "../controllers/user.controller";
+import { deleteMyProfile, getMyProfile, updateMyProfile } from "./user.controller";
 
 const router:Router = Router();
 

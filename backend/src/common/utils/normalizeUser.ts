@@ -1,4 +1,4 @@
-import { IUser } from "../models/user.model";
+import { IUser } from "../../modules/user/user.schema";
 
 export const normalizeUser = (user:IUser)=>{
     return {

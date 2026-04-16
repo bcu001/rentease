@@ -1,6 +1,6 @@
 import { Response , Request} from "express";
-import asyncHandler from "../helpers/asyncHandler";
-import { User } from "../models/user.model";
+import asyncHandler from "../../common/middlewares/asyncHandler";
+import { User } from "./user.schema";
 
 export const getMyProfile = asyncHandler(async(req:Request,res:Response)=>{
     const {id} = req.body;

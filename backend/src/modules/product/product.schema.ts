@@ -1,8 +1,4 @@
-import {
-  Schema,
-  Document,
-  model,
-} from "mongoose";
+import { Schema, Document, model } from "mongoose";
 
 export enum Category {
   FURNITURE = "furniture",
@@ -19,19 +15,19 @@ export enum ProductStatus {
 export interface IProduct extends Document {
   name: string;
   category: Category;
-  monthlyRent: number;
-  securityDeposit: number;
-  availableQuantity: number;
+  rentAmount: number;
+  depositAmount: number;
+  stock: number;
   // tenureOptions: number[];
   status: ProductStatus;
 }
 
 const productSchema = new Schema<IProduct>({
-  name: { type: String, required: true },
+  name: { type: String, required: true, index: true },
   category: { type: String, enum: Object.values(Category), required: true },
-  monthlyRent: { type: Number, required: true, min: 0 },
-  securityDeposit: { type: Number },
-  availableQuantity:{type:Number, required:true, default:1, min:0},
+  rentAmount: { type: Number, required: true, min: 0 },
+  depositAmount: { type: Number },
+  stock: { type: Number, required: true, default: 1, min: 0 },
   // tenureOptions: { type: [Number], required: true, min: 1 },
   status: {
     type: String,
@@ -41,8 +37,8 @@ const productSchema = new Schema<IProduct>({
 });
 
 productSchema.pre("save", async function () {
-  if (this.monthlyRent && !this.securityDeposit) {
-    this.securityDeposit = this.monthlyRent * 2;
+  if (this.rentAmount && !this.depositAmount) {
+    this.depositAmount = this.rentAmount * 2;
   }
 });
 

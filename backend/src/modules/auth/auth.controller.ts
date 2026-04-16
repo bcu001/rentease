@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
+import { User } from "../user/user.schema";
 import bcrypt from "bcryptjs";
-import { ENV } from "../config/env";
+import { ENV } from "../../common/config/env";
 import * as jwt from "jsonwebtoken";
-import asyncHandler from "../helpers/asyncHandler";
-import { AppError } from "../helpers/AppError";
-import { normalizeUser } from "../helpers/normalizeUser";
+import asyncHandler from "../../common/middlewares/asyncHandler";
+import { AppError } from "../../common/errors/AppError";  
+import { normalizeUser } from "../../common/utils/normalizeUser";
 
 export const logIn = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -16,7 +16,7 @@ export const logIn = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("no user exists", 404);
   }
 
-  const validatePass = bcrypt.compare(password, existingUser.hashedPassword);
+  const validatePass = bcrypt.compare(password, existingUser.passwordHash);
 
   if (!validatePass) {
     throw new AppError("inccorect password", 401);
@@ -46,7 +46,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const newUser = await User.create({ name, email, hashedPassword });
+  const newUser = await User.create({ name, email, passwordHash: hashedPassword });
 
 
 

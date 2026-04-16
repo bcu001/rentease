@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import asyncHandler from "../helpers/asyncHandler";
-import Product, { IProduct } from "../models/product.model";
-import { AppError } from "../helpers/AppError";
-import { sendSuccess } from "../helpers/response";
+import asyncHandler from "../../common/middlewares/asyncHandler";
+import Product, { IProduct } from "./product.schema";
+import { AppError } from "../../common/errors/AppError";
+import { sendSuccess } from "../../common/utils/response";
 
 export const getTopProducts = asyncHandler(
   async(req:Request, res:Response)=>{
@@ -39,14 +39,14 @@ export const getProductById = asyncHandler(
 export const createProduct = asyncHandler(
   async (req: Request, res: Response) => {
     console.log("create producti")
-    const {name, category, monthlyRent, availableQuantity} = req.body;
+    const {name, category, monthlyRent, stock} = req.body;
 
     const existingProduct = await Product.findOne({name});
     if (existingProduct) { 
         throw new AppError("product already exist")
     }
 
-    const newProduct = await Product.create({name, category, monthlyRent, availableQuantity});
+    const newProduct = await Product.create({name, category, rentAmount: monthlyRent, stock});
 
     return sendSuccess(res, newProduct )
   },
@@ -55,7 +55,7 @@ export const updateProduct = asyncHandler(
   async (req: Request, res: Response) => {
     console.log("update product")
     const { id } = req.params;
-    const { name, category, monthlyRent, availableQuantity } = req.body;
+    const { name, category, monthlyRent, stock } = req.body;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -66,8 +66,8 @@ export const updateProduct = asyncHandler(
     const updateData: Partial<IProduct> = {};
     if (name !== undefined) updateData.name = name;
     if (category !== undefined) updateData.category = category;
-    if (monthlyRent !== undefined) updateData.monthlyRent = monthlyRent;
-    if (availableQuantity !== undefined) updateData.availableQuantity = availableQuantity;
+    if (monthlyRent !== undefined) updateData.rentAmount = monthlyRent;
+    if (stock !== undefined) updateData.stock = stock;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       id,

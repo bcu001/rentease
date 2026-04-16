@@ -5,7 +5,7 @@ import {
   getCart,
   removeItemCart,
   updateCart,
-} from "../controllers/cart.controller";
+} from "./cart.controller";
 
 const router: Router = Router();
 

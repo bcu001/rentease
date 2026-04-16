@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import asyncHandler from "../helpers/asyncHandler";
-import { Cart } from "../models/cart.model";
-import { sendSuccess } from "../helpers/response";
-import Product from "../models/product.model";
-import { AppError } from "../helpers/AppError";
+import { Cart } from "./cart.schema";
+import asyncHandler from "../../common/middlewares/asyncHandler";
+import { sendSuccess } from "../../common/utils/response";
+import Product from "../product/product.schema";
+import { AppError } from "../../common/errors/AppError";
 
 export const addCart = asyncHandler(async (req: Request, res: Response) => {
   const { productId, quantity = 1, rentDuration, userId } = req.body;
@@ -16,9 +16,9 @@ export const addCart = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("product not found", 404);
   }
 
-  if (product.availableQuantity < quantity) {
+  if (product.stock < quantity) {
     throw new AppError(
-      `only ${product.availableQuantity} items are available`,
+      `only ${product.stock} items are available`,
       400,
     );
   }
@@ -41,9 +41,9 @@ export const addCart = asyncHandler(async (req: Request, res: Response) => {
     existingItem.quantity += quantity;
     existingItem.rentDuration = rentDuration;
 
-    if (existingItem.quantity > product.availableQuantity) {
+    if (existingItem.quantity > product.stock) {
       throw new AppError(
-        `only ${product.availableQuantity} items are available`,
+        `only ${product.stock} items are available`,
         400,
       );
     }

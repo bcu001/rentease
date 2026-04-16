@@ -2,13 +2,13 @@ import { Schema, model, Document } from "mongoose";
 
 export enum UserRole {
   ADMIN = "ADMIN",
-  USER = "USER"
+  USER = "USER",
 }
 
 export interface IUser extends Document {
-  name:string;
+  name: string;
   email: string;
-  hashedPassword: string;
+  passwordHash: string;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
@@ -16,11 +16,11 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
-    name:{
-      type:String,
-      required:true,
-      lowercase:true,
-      trim:true
+    name: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
 
     email: {
@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUser>(
       trim: true,
     },
 
-    hashedPassword: {
+    passwordHash: {
       type: String,
       required: true,
       select: false,
@@ -40,13 +40,12 @@ const UserSchema = new Schema<IUser>(
     role: {
       type: String,
       enum: Object.values(UserRole),
-      default: UserRole.USER
+      default: UserRole.USER,
     },
-    
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const User = model<IUser>("User", UserSchema);

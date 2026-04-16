@@ -26,15 +26,15 @@ export interface IOrder extends Document {
   userId: Types.ObjectId;
   items: IOrderItem[];
 
-  totalRent: number;
-  totalDeposit: number;
+  rentTotal: number;
+  depositTotal: number;
   totalAmount: number;
 
   startDate: Date;
   endDate: Date;
   deliveryAddress: string;
 
-  status: OrderStatus;
+  orderStatus: OrderStatus;
   paymentStatus: PaymentStatus;
 
   createdAt: Date;
@@ -74,7 +74,7 @@ const orderItemSchema = new Schema<IOrderItem>(
       min: 1,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new Schema<IOrder>(
@@ -90,13 +90,13 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
 
-    totalRent: {
+    rentTotal: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    totalDeposit: {
+    depositTotal: {
       type: Number,
       required: true,
       min: 0,
@@ -124,7 +124,7 @@ const orderSchema = new Schema<IOrder>(
       trim: true,
     },
 
-    status: {
+    orderStatus: {
       type: String,
       enum: Object.values(OrderStatus),
       default: OrderStatus.PENDING,
@@ -138,7 +138,7 @@ const orderSchema = new Schema<IOrder>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const Order = model<IOrder>("Order", orderSchema);

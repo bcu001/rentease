@@ -1,5 +1,5 @@
 import mongoose, { connect } from "mongoose";
-import { ENV } from "../config/env";
+import { ENV } from "../common/config/env";
 import dns from 'dns'
 
 dns.setServers([

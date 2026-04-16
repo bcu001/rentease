@@ -24,7 +24,7 @@ const cartItemSchema = new Schema<ICartItem>(
       type: Number,
       required: true,
       min: 1,
-      default:1
+      default: 1,
     },
     rentDuration: {
       type: Number,
@@ -51,4 +51,3 @@ const cartSchema = new Schema<ICart>(
 );
 
 export const Cart = model<ICart>("Cart", cartSchema);
-
