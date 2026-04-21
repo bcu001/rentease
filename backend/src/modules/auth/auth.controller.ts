@@ -1,40 +1,45 @@
 import { Request, Response } from "express";
 import { User } from "../user/user.schema";
 import bcrypt from "bcryptjs";
-import { ENV } from "../../common/config/env";
-import * as jwt from "jsonwebtoken";
 import asyncHandler from "../../common/middlewares/asyncHandler";
-import { AppError } from "../../common/errors/AppError";  
+import { AppError } from "../../common/errors/AppError";
 import { normalizeUser } from "../../common/utils/normalizeUser";
+import { loginUser } from "./auth.services";
+import { sendSuccess } from "../../common/utils/apiResponse";
 
-export const logIn = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const loginUserHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email }).select("+hashedPassword");
+    const { user, accessToken, refreshToken } = await loginUser(
+      email,
+      password,
+    );
 
-  if (!existingUser) {
-    throw new AppError("no user exists", 404);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return sendSuccess(
+      res,
+      { user, accessToken },
+      200,
+      "user log in suceessfully",
+    );
+  },
+);
+
+export const logoutUserHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    User.findByIdAndUpdate(req.user._id, {
+      $set: { refreshToken: undefined },
+    });
+    res.clearCookie("refreshToken");
+    return sendSuccess(res, {}, 200,"user logged out");
   }
-
-  const validatePass = bcrypt.compare(password, existingUser.passwordHash);
-
-  if (!validatePass) {
-    throw new AppError("inccorect password", 401);
-  }
-
-  const token = jwt.sign({ userId: existingUser._id }, ENV.JWT_SECRET, {
-    expiresIn: ENV.JWT_EXPIRE_IN as jwt.SignOptions["expiresIn"],
-  });
-
-  return res.json({
-    success: true,
-    message: "user log in successfully",
-    data: {
-      token,
-      user: normalizeUser(existingUser),
-    },
-  });
-});
+);
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -46,9 +51,11 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const newUser = await User.create({ name, email, passwordHash: hashedPassword });
-
-
+  const newUser = await User.create({
+    name,
+    email,
+    passwordHash: hashedPassword,
+  });
 
   return res.status(201).json({
     success: true,

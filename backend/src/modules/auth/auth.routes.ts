@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { logIn, register } from "./auth.controller";
+import { loginUserHandler, register } from "./auth.controller";
 import validateRequest from "../../common/middlewares/validateRequest";
 import {
   logInSchema,
@@ -8,7 +8,7 @@ import {
 
 const router: Router = Router();
 
-router.post("/login", validateRequest(logInSchema), logIn);
+router.post("/login", validateRequest(logInSchema), loginUserHandler);
 router.post("/register", validateRequest(registerSchema), register);
 
 export default router;

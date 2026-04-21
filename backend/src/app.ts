@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import { ENV } from "./common/config/env";
+import cookieParser from 'cookie-parser'
 
 import authRouter from "./modules/auth/auth.routes";
 import userRouter from "./modules/user/user.routes"
@@ -14,6 +15,7 @@ const app: Application = express();
 const apiVersion = "/api/v1";
 
 app.use(express.json())
+app.use(cookieParser());
 
 app.use(cors({
   origin: ENV.CLIENT_URL
