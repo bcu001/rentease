@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# TypeScript build
+dist/
+
+# Logs
+*.log
+logs/
+
+# Testing
+coverage/
+
+# Temporary
+tmp/
+temp/
+
+# IDE
+.vscode/
+.idea/

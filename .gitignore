@@ -1,0 +1,34 @@
+.vscode
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build / coverage
+coverage/
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/
+
+# Package manager
+.pnpm-store/
+.npm/
+.yarn/
